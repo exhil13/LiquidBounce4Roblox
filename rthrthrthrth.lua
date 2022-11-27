@@ -469,6 +469,28 @@ local Flight = windowapi.CreateButton({
 	end,
 })
 
+local FunnyFly = windowapi.CreateButton({
+	["Name"] = "FunnyFly",
+	["Tab"] = "Movement",
+	["Function"] = function(callback)
+		if callback then
+			_G.Velo = true
+
+			while _G.Velo do
+				game.Players.LocalPlayer.character.HumanoidRootPart.Velocity = game.Players.LocalPlayer.character.HumanoidRootPart.Velocity + Vector3.new(0,40,0)
+				wait(0.2)
+			end
+		else
+            _G.Velo = false
+
+			while _G.Velo do
+				game.Players.LocalPlayer.character.HumanoidRootPart.Velocity = game.Players.LocalPlayer.character.HumanoidRootPart.Velocity + Vector3.new(0,40,0)
+				wait(0.2)
+			end
+		end
+	end,
+})
+
 local Chams = windowapi.CreateButton({
 	["Name"] = "Chams",
 	["Tab"] = "Visuals",
