@@ -813,8 +813,8 @@ function AddTag(plr, tag, color)
 end
 
 AddTag("bedwarsisbedwars_6 ","Moon Owner", Color3.fromRGB(255, 0, 0))
-AddTag("mymomisstinky5333","Moon Beta", Color3.fromRGB(77, 255, 0))
-AddTag("HugeAcImprovements","Head Moon Dev", Color3.fromRGB(77, 255, 0))
+AddTag("wefwefwef","Moon Beta", Color3.fromRGB(77, 255, 0))
+AddTag("synapse_lololol","Head Moon Dev", Color3.fromRGB(77, 255, 0))
 AddTag("thisaccountajokeIS","Head Moon Dev", Color3.fromRGB(77, 255, 0))
 AddTag("PrismUserz","NightBed Owner", Color3.fromRGB(77, 255, 0))
 AddTag("Monia_9266","NightBed Owner", Color3.fromRGB(77, 255, 0))
