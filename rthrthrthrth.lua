@@ -1,110 +1,15 @@
+local function chat(msg)
+	local args = {
+		[1] = msg,
+		[2] = "All"
+	}
+
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+
+end
 local lplr = game.Players.LocalPlayer
 local cam = game:GetService("Workspace").CurrentCamera
 local uis = game:GetService("UserInputService")
-local KnitClient = debug.getupvalue(require(lplr.PlayerScripts.TS.knit).setup, 6)
-local Client = require(game:GetService("ReplicatedStorage").TS.remotes).default.Client
-local getremote = function(tab)
-	for i,v in pairs(tab) do
-		if v == "Client" then
-			return tab[i + 1]
-		end
-	end
-	return ""
-end
-local repstorage = game:GetService("ReplicatedStorage")
-local bedwars = {
-	["DropItemRemote"] = getremote(debug.getconstants(getmetatable(KnitClient.Controllers.ItemDropController).dropItemInHand)),
-	["SprintController"] = KnitClient.Controllers.SprintController,
-	["CombatConstant"] = require(repstorage.TS.combat["combat-constant"]).CombatConstant,
-	["ClientHandlerStore"] = require(lplr.PlayerScripts.TS.ui.store).ClientStore,
-	["KnockbackUtil"] = require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil,
-	["PingController"] = require(lplr.PlayerScripts.TS.controllers.game.ping["ping-controller"]).PingController,
-	["DamageIndicator"] = KnitClient.Controllers.DamageIndicatorController.spawnDamageIndicator,
-	["SwordController"] = KnitClient.Controllers.SwordController,
-	["ViewmodelController"] = KnitClient.Controllers.ViewmodelController,
-	["ClientHandler"] = Client,
-	["AppController"] = require(repstorage["rbxts_include"]["node_modules"]["@easy-games"]["game-core"].out.client.controllers["app-controller"]).AppController,
-	["SwordRemote"] = getremote(debug.getconstants((KnitClient.Controllers.SwordController).attackEntity)),
-}
-local canReturn = false
-function getnearestplayer(maxdist)
-	local obj = lplr
-	local dist = math.huge
-	for i,v in pairs(game:GetService("Players"):GetChildren()) do
-		if v.Team ~= lplr.Team and v ~= lplr and isalive(v) and isalive(lplr) then
-			local mag = (v.Character:FindFirstChild("HumanoidRootPart").Position - lplr.Character:FindFirstChild("HumanoidRootPart").Position).Magnitude
-			if (mag < dist) and (mag < maxdist) then
-				dist = mag
-				obj = v
-			end
-			if v.Team ~= lplr.Team and v ~= lplr and isalive(v) and isalive(lplr) then
-				canReturn = true
-			end
-		end
-	end
-	if canReturn then
-		canReturn = false
-		return obj
-	end
-end
-local KnockbackTable = debug.getupvalue(require(game:GetService("ReplicatedStorage").TS.damage["knockback-util"]).KnockbackUtil.calculateKnockbackVelocity, 1)
-function isalive(plr)
-	plr = plr or lplr
-	if not plr.Character then return false end
-	if not plr.Character:FindFirstChild("Head") then return false end
-	if not plr.Character:FindFirstChild("Humanoid") then return false end
-	return true
-end
-
-local BedwarsSwords = require(game:GetService("ReplicatedStorage").TS.games.bedwars["bedwars-swords"]).BedwarsSwords
-function hashFunc(vec) 
-	return {value = vec}
-end
-local function GetInventory(plr)
-	if not plr then 
-		return {items = {}, armor = {}}
-	end
-
-	local suc, ret = pcall(function() 
-		return require(game:GetService("ReplicatedStorage").TS.inventory["inventory-util"]).InventoryUtil.getInventory(plr)
-	end)
-
-	if not suc then 
-		return {items = {}, armor = {}}
-	end
-
-	if plr.Character and plr.Character:FindFirstChild("InventoryFolder") then 
-		local invFolder = plr.Character:FindFirstChild("InventoryFolder").Value
-		if not invFolder then return ret end
-		for i,v in next, ret do 
-			for i2, v2 in next, v do 
-				if typeof(v2) == 'table' and v2.itemType then
-					v2.instance = invFolder:FindFirstChild(v2.itemType)
-				end
-			end
-			if typeof(v) == 'table' and v.itemType then
-				v.instance = invFolder:FindFirstChild(v.itemType)
-			end
-		end
-	end
-
-	return ret
-end
-local function getSword()
-	local highest, returning = -9e9, nil
-	for i,v in next, GetInventory(lplr).items do 
-		local power = table.find(BedwarsSwords, v.itemType)
-		if not power then continue end
-		if power > highest then 
-			returning = v
-			highest = power
-		end
-	end
-	return returning
-end
-local HitRemote = Client:Get(bedwars["SwordRemote"])
-local Distance = {["Value"] = 18}
-local Enabled = true
 
 local uiCount = 0
 local scriptName = "Moon"
@@ -299,160 +204,134 @@ newTab("Movement")
 newTab("Visuals")
 newTab("Utility")
 
-local Killaura = windowapi.CreateButton({
-	["Name"] = "Killaura",
+local InstaKillExploit = windowapi.CreateButton({
+	["Name"] = "InstaKillExploit",
 	["Tab"] = "Combat",
 	["Function"] = function(callback)
 		if callback then
-			repeat
-				task.wait(0.12)
-				local nearest = getnearestplayer(Distance["Value"])
-				if nearest ~= nil and nearest.Team ~= lplr.Team and isalive(nearest) and nearest.Character:FindFirstChild("Humanoid").Health > 0.1 and isalive(lplr) and lplr.Character:FindFirstChild("Humanoid").Health > 0.1 and not nearest.Character:FindFirstChild("ForceField") then
-					local sword = getSword()
-					spawn(function()
-						local anim = Instance.new("Animation")
-						anim.AnimationId = "rbxassetid://4947108314"
-						local animator = lplr.Character:FindFirstChild("Humanoid"):FindFirstChild("Animator")
-						animator:LoadAnimation(anim):Play()
-						anim:Destroy()
-						bedwars["ViewmodelController"]:playAnimation(15)
-					end)
-					if sword ~= nil then
-						bedwars["SwordController"].lastAttack = game:GetService("Workspace"):GetServerTimeNow() - 0.11
-						HitRemote:SendToServer({
-							["weapon"] = sword.tool,
-							["entityInstance"] = nearest.Character,
-							["validate"] = {
-								["raycast"] = {
-									["cameraPosition"] = hashFunc(cam.CFrame.Position),
-									["cursorDirection"] = hashFunc(Ray.new(cam.CFrame.Position, nearest.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction)
-								},
-								["targetPosition"] = hashFunc(nearest.Character:FindFirstChild("HumanoidRootPart").Position),
-								["selfPosition"] = hashFunc(lplr.Character:FindFirstChild("HumanoidRootPart").Position + ((lplr.Character:FindFirstChild("HumanoidRootPart").Position - nearest.Character:FindFirstChild("HumanoidRootPart").Position).magnitude > 14 and (CFrame.lookAt(lplr.Character:FindFirstChild("HumanoidRootPart").Position, nearest.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0)))
-							},
-							["chargedAttack"] = {["chargeRatio"] = 0.8}
-						})
-					end
+			_G.InstaKillExploit = true
+
+			while _G.InstaKillExploit do wait()
+
+				if workspace[game.Players.LocalPlayer.Name]:FindFirstChild("wood_sword") then
+					local args = {
+						[1] = {
+							[1] = {
+								[1] = "\18",
+								[2] = "wood_sword",
+								[3] = nil,
+								[4] = Vector3.new(-0.6882433295249939, -5.313460338385312e-09, -0.7254799008369446),
+								[5] = {
+									[1] = nil,
+									[2] = nil,
+									[3] = nil,
+									[4] = nil,
+									[5] = nil,
+									[6] = nil,
+									[7] = nil,
+									[8] = nil,
+									[9] = nil,
+									[10] = nil,
+									[11] = nil,
+									[12] = game:GetService("Players").LocalPlayer.Character.LeftLowerLeg,
+									[13] = game:GetService("Players").LocalPlayer.Character.LeftFoot,
+									[14] = game:GetService("Players").LocalPlayer.Character.RightFoot,
+									[15] = game:GetService("Players").LocalPlayer.Character.RightLowerLeg,
+									[16] = game:GetService("Players").LocalPlayer.Character.RightUpperLeg,
+									[17] = game:GetService("Players").LocalPlayer.Character.LeftUpperLeg,
+									[18] = game:GetService("Players").LocalPlayer.Character.LeftHand,
+									[19] = game:GetService("Players").LocalPlayer.Character.LeftLowerArm,
+									[20] = game:GetService("Players").LocalPlayer.Character.LowerTorso,
+									[21] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+									[22] = game:GetService("Players").LocalPlayer.Character.UpperTorso,
+									[23] = game:GetService("Players").LocalPlayer.Character.RightLowerArm,
+									[24] = game:GetService("Players").LocalPlayer.Character.wood_sword.Handle,
+									[25] = game:GetService("Players").LocalPlayer.Character.wood_sword.SwordPart,
+									[26] = game:GetService("Players").LocalPlayer.Character.RightUpperArm,
+									[27] = game:GetService("Players").LocalPlayer.Character.LeftUpperArm,
+									[28] = nil,
+									[29] = game:GetService("Players").LocalPlayer.Character.RightHand,
+									[30] = game:GetService("Players").LocalPlayer.Character.wood_sword.SwordPart,
+									[31] = game:GetService("Players").LocalPlayer.Character.wood_sword.SwordPart,
+									[32] = game:GetService("Players").LocalPlayer.Character.Head,
+									[33] = nil
+								}
+							}
+						}
+					}
+
+					game:GetService("ReplicatedStorage").RemoteEvent:FireServer(unpack(args))
 				end
-			until not Enabled
+
+			end
 		else
-			print("Disabled")
+			_G.InstaKillExploit = false
+
+			while _G.InstaKillExploit do wait()
+
+				if workspace[game.Players.LocalPlayer.Name]:FindFirstChild("wood_sword") then
+					local args = {
+						[1] = {
+							[1] = {
+								[1] = "\18",
+								[2] = "wood_sword",
+								[3] = nil,
+								[4] = Vector3.new(-0.6882433295249939, -5.313460338385312e-09, -0.7254799008369446),
+								[5] = {
+									[1] = nil,
+									[2] = nil,
+									[3] = nil,
+									[4] = nil,
+									[5] = nil,
+									[6] = nil,
+									[7] = nil,
+									[8] = nil,
+									[9] = nil,
+									[10] = nil,
+									[11] = nil,
+									[12] = game:GetService("Players").LocalPlayer.Character.LeftLowerLeg,
+									[13] = game:GetService("Players").LocalPlayer.Character.LeftFoot,
+									[14] = game:GetService("Players").LocalPlayer.Character.RightFoot,
+									[15] = game:GetService("Players").LocalPlayer.Character.RightLowerLeg,
+									[16] = game:GetService("Players").LocalPlayer.Character.RightUpperLeg,
+									[17] = game:GetService("Players").LocalPlayer.Character.LeftUpperLeg,
+									[18] = game:GetService("Players").LocalPlayer.Character.LeftHand,
+									[19] = game:GetService("Players").LocalPlayer.Character.LeftLowerArm,
+									[20] = game:GetService("Players").LocalPlayer.Character.LowerTorso,
+									[21] = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
+									[22] = game:GetService("Players").LocalPlayer.Character.UpperTorso,
+									[23] = game:GetService("Players").LocalPlayer.Character.RightLowerArm,
+									[24] = game:GetService("Players").LocalPlayer.Character.wood_sword.Handle,
+									[25] = game:GetService("Players").LocalPlayer.Character.wood_sword.SwordPart,
+									[26] = game:GetService("Players").LocalPlayer.Character.RightUpperArm,
+									[27] = game:GetService("Players").LocalPlayer.Character.LeftUpperArm,
+									[28] = nil,
+									[29] = game:GetService("Players").LocalPlayer.Character.RightHand,
+									[30] = game:GetService("Players").LocalPlayer.Character.wood_sword.SwordPart,
+									[31] = game:GetService("Players").LocalPlayer.Character.wood_sword.SwordPart,
+									[32] = game:GetService("Players").LocalPlayer.Character.Head,
+									[33] = workspace.PlacedItems.UnseperatedMap.concrete.concrete
+								}
+							}
+						}
+					}
+
+					game:GetService("ReplicatedStorage").RemoteEvent:FireServer(unpack(args))
+				end
+
+			end
 		end
 	end,
 })
 
-local Velocity = windowapi.CreateButton({
-	["Name"] = "Velocity",
-	["Tab"] = "Combat",
-	["Function"] = function(callback)
-		if callback then
-			KnockbackTable["kbDirectionStrength"] = 0
-			KnockbackTable["kbUpwardStrength"] = 0
-		else
-			KnockbackTable["kbDirectionStrength"] = 100
-			KnockbackTable["kbUpwardStrength"] = 100
-		end
-	end,
-})
-
-local CFrameSpeed = windowapi.CreateButton({
-	["Name"] = "CFrameSpeed",
+local Speed = windowapi.CreateButton({
+	["Name"] = "Speed",
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
-			local Speed = 0.1
-            _G.Speed1 = true
-            local You = game.Players.LocalPlayer.Name
-            local UIS = game:GetService("UserInputService")
-            while _G.Speed1 do wait()
-            if UIS:IsKeyDown(Enum.KeyCode.W) then
-                game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(0,0,-Speed)
-            end;
-            if UIS:IsKeyDown(Enum.KeyCode.A) then
-                game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(-Speed,0,0)
-            end;
-            if UIS:IsKeyDown(Enum.KeyCode.S) then
-                game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(0,0,Speed)
-            end;
-            if UIS:IsKeyDown(Enum.KeyCode.D) then
-                game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(Speed,0,0)
-            end;
-        end
+			game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 120
 		else
-            local Speed = 0.1
-            _G.Speed1 = false
-            local You = game.Players.LocalPlayer.Name
-            local UIS = game:GetService("UserInputService")
-            while _G.Speed1 do wait()
-            if UIS:IsKeyDown(Enum.KeyCode.W) then
-                game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(0,0,-Speed)
-            end;
-            if UIS:IsKeyDown(Enum.KeyCode.A) then
-                game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(-Speed,0,0)
-            end;
-            if UIS:IsKeyDown(Enum.KeyCode.S) then
-                game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(0,0,Speed)
-            end;
-            if UIS:IsKeyDown(Enum.KeyCode.D) then
-                game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(Speed,0,0)
-            end;
-        end
-
-		end
-	end,
-})
-
-local HeatSeekerSpeed = windowapi.CreateButton({
-	["Name"] = "HeatSeekerSpeed",
-	["Tab"] = "Movement",
-	["Function"] = function(callback)
-		if callback then
-			_G.Speed1 = true
-
-            while _G.Speed1 do wait(0.8)
-                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 150
-				wait(0.05)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
-				wait(0.05)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
-            end
-		else
-            _G.Speed1 = false
-
-            while _G.Speed1 do wait(0.8)
-                game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 150
-				wait(0.05)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
-				wait(0.05)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
-            end
-		end
-	end,
-})
-
-local LongJump = windowapi.CreateButton({
-	["Name"] = "LongJump",
-	["Tab"] = "Movement",
-	["Function"] = function(callback)
-		if callback then
-			game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-		    game.Workspace.Gravity = 10
-		else
-            game.Workspace.Gravity = 192.6
-		end
-	end,
-})
-
-local HighJump = windowapi.CreateButton({
-	["Name"] = "HighJump",
-	["Tab"] = "Movement",
-	["Function"] = function(callback)
-		if callback then
-			game.Workspace.Gravity = 0
-		   lplr.character.HumanoidRootPart.Velocity = lplr.character.HumanoidRootPart.Velocity + Vector3.new(0,150,0)
-		else
-            game.Workspace.Gravity = 192.6
-		    lplr.Character.HumanoidRootPart.Velocity1:Destroy()
+			game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
 		end
 	end,
 })
@@ -464,7 +343,7 @@ local Flight = windowapi.CreateButton({
 		if callback then
 			workspace.Gravity = 0
 		else
-            workspace.Gravity = 196.2
+			workspace.Gravity = 196.2
 		end
 	end,
 })
@@ -481,7 +360,7 @@ local FunnyFly = windowapi.CreateButton({
 				wait(0.2)
 			end
 		else
-            _G.Velo = false
+			_G.Velo = false
 
 			while _G.Velo do
 				game.Players.LocalPlayer.character.HumanoidRootPart.Velocity = game.Players.LocalPlayer.character.HumanoidRootPart.Velocity + Vector3.new(0,40,0)
@@ -491,183 +370,179 @@ local FunnyFly = windowapi.CreateButton({
 	end,
 })
 
-local Chams = windowapi.CreateButton({
-	["Name"] = "Chams",
-	["Tab"] = "Visuals",
-	["Function"] = function(callback)
-		if callback then
-			local players = game.Players:GetPlayers()
-
-		    for i,v in pairs(players) do
-                esp = Instance.new("Highlight")
-                esp.Name = v.Name
-                esp.FillTransparency = 0.5
-                esp.FillColor = Color3.new(1, 0, 1)
-                esp.OutlineColor = Color3.new(1, 0, 1)
-                esp.OutlineTransparency = 0
-                esp.Parent = v.Character
-            end
-		else
-            esp:Destroy()
-		end
-	end,
-})
-
-local NoFall = windowapi.CreateButton({
-	["Name"] = "NoFall",
-	["Tab"] = "Utility",
-	["Function"] = function(callback)
-		if callback then
-			while true do wait()
-                game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.GroundHit:FireServer()
-            end
-		else
-            print("cope")
-		end
-	end,
-})
-
-local Sprint = windowapi.CreateButton({
-	["Name"] = "Sprint",
-	["Tab"] = "Utility",
-	["Function"] = function(callback)
-		if callback then
-			if (not bedwars["SprintController"].sprinting) then
-                bedwars["SprintController"]:startSprinting()
-            end
-		else
-            print("hello")
-		end
-	end,
-})
-
+local AntivoidEnabled = nil
 local AntiVoid = windowapi.CreateButton({
 	["Name"] = "AntiVoid",
 	["Tab"] = "Utility",
 	["Function"] = function(callback)
 		if callback then
-			if lplr.Character.HumanoidRootPart.Position.Y < 15 then
-                lplr.Character.HumanoidRootPart.CFrame += Vector3.new(0,75,0)
-            end
+			AntivoidEnabled = true
+			repeat wait()
+				if lplr.Character.HumanoidRootPart.Position.Y < 1 then
+					local e = Instance.new("BodyVelocity",lplr.Character.HumanoidRootPart)
+					workspace.Gravity = 0
+					e.Velocity = Vector3.new(lplr.Character.HumanoidRootPart.Velocity.X,130,lplr.Character.HumanoidRootPart.Velocity.Z)
+					task.wait(0.5)
+					e:Destroy()
+					workspace.Gravity = 196.2
+				end
+			until not AntivoidEnabled
 		else
-            print("oh well.")
+			AntivoidEnabled = false
 		end
 	end,
 })
 
-local Stealer = windowapi.CreateButton({
-	["Name"] = "Stealer",
+AutoToxicEnabled = nil
+local AutoToxic = windowapi.CreateButton({
+	["Name"] = "AutoToxic",
 	["Tab"] = "Utility",
 	["Function"] = function(callback)
 		if callback then
-			if bedwars["AppController"]:isAppOpen("ChestApp") then
-                local chest = lplr.Character:FindFirstChild("ObservedChestFolder")
-                local items = chest and chest.Value and chest.Value:GetChildren() or {}
-                if #items > 0 then
-                    for itemNumber,Item in pairs(items) do
-                        if Item:IsA("Accessory") then
-                            task.spawn(function()
-                                pcall(function()
-                                    bedwars["ClientHandler"]:GetNamespace("Inventory"):Get("ChestGetItem"):CallServer(chest.Value, Item)
-                                end)
-                            end)
-                        end
-                    end
-                end
-            end
+			AutoToxicEnabled = true
+			repeat task.wait(3)
+				for _,v in pairs( game.Players:GetPlayers()) do
+					if v.Character.Humanoid.Health == 0 then
+						local pick = math.random(1,3)
+						if pick == 1 then
+							chat("L"..v.Name.." Looks like you forgot to get moon.")
+						elseif pick == 2 then
+							chat(v.Name.." do you eat losses for breakfast?")
+						elseif pick == 3 then
+							chat("Moon is sponsored by edp445, "..v.Name.." L.")
+						end
+					end
+				end
+			until not AutoToxicEnabled
 		else
-            print("oh well.")
+			AutoToxicEnabled = false
 		end
 	end,
 })
 
-local NoBob = windowapi.CreateButton({
-	["Name"] = "NoBob",
+local Nuker = windowapi.CreateButton({
+	["Name"] = "Nuker",
 	["Tab"] = "Utility",
 	["Function"] = function(callback)
 		if callback then
-			lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(25 / 10))
-		    lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (8 / 10))
+			AutoToxicEnabled = true
+			repeat task.wait(0.1)
+				for _,v in pairs(workspace.PlacedItems:GetChildren()) do
+					if v.Name == "bed" then
+						local args = {
+							[1] = {
+								[1] = {
+									[1] = "\11",
+									[2] = "wooden_pickaxe",
+
+									[3] = v
+								}
+							}
+						}
+
+						game:GetService("ReplicatedStorage").RemoteEvent:FireServer(unpack(args))
+					end
+				end
+			until not AutoToxicEnabled
 		else
-            print("oh well.")
+			AutoToxicEnabled = false
 		end
 	end,
 })
 
---[[for _,v in pairs(states) do
-	if v == true then
-		v()
+local betterNuker = windowapi.CreateButton({
+	["Name"] = "MegaNuker",
+	["Tab"] = "Utility",
+	["Function"] = function(callback)
+		if callback then
+			AutoToxicEnabled = true
+			repeat task.wait(0.1)
+				for _,v in pairs(workspace.PlacedItems:GetChildren()) do
+						local args = {
+							[1] = {
+								[1] = {
+									[1] = "\11",
+									[2] = "wooden_pickaxe",
+
+									[3] = v
+								}
+							}
+						}
+
+						game:GetService("ReplicatedStorage").RemoteEvent:FireServer(unpack(args))
+					end
+			until not AutoToxicEnabled
+		else
+			AutoToxicEnabled = false
+		end
+	end,
+})
+
+function AddTag(plr, tag, color)
+	local Players = game:GetService("Players")
+	local ReplicatedStorage = game:GetService("ReplicatedStorage")
+	local Plr = plr
+	local ChatTag = {}
+	ChatTag[Plr] =
+		{
+			TagText = tag, --Text
+			TagColor = color, --Rgb
+			NameColor = color
+		}
+
+
+
+	local oldchanneltab
+	local oldchannelfunc
+	local oldchanneltabs = {}
+
+	--// Chat Listener
+	for i, v in pairs(getconnections(ReplicatedStorage.DefaultChatSystemChatEvents.OnNewMessage.OnClientEvent)) do
+		if
+			v.Function
+			and #debug.getupvalues(v.Function) > 0
+			and type(debug.getupvalues(v.Function)[1]) == "table"
+			and getmetatable(debug.getupvalues(v.Function)[1])
+			and getmetatable(debug.getupvalues(v.Function)[1]).GetChannel
+		then
+			oldchanneltab = getmetatable(debug.getupvalues(v.Function)[1])
+			oldchannelfunc = getmetatable(debug.getupvalues(v.Function)[1]).GetChannel
+			getmetatable(debug.getupvalues(v.Function)[1]).GetChannel = function(Self, Name)
+				local tab = oldchannelfunc(Self, Name)
+				if tab and tab.AddMessageToChannel then
+					local addmessage = tab.AddMessageToChannel
+					if oldchanneltabs[tab] == nil then
+						oldchanneltabs[tab] = tab.AddMessageToChannel
+					end
+					tab.AddMessageToChannel = function(Self2, MessageData)
+						if MessageData.FromSpeaker and Players[MessageData.FromSpeaker] then
+							if ChatTag[Players[MessageData.FromSpeaker].Name] then
+								MessageData.ExtraData = {
+									NameColor = ChatTag[Players[MessageData.FromSpeaker].Name].NameColor
+										or Players[MessageData.FromSpeaker].TeamColor.Color,
+									Tags = {
+										table.unpack(MessageData.ExtraData.Tags),
+										{
+											TagColor = ChatTag[Players[MessageData.FromSpeaker].Name].TagColor,
+											TagText = ChatTag[Players[MessageData.FromSpeaker].Name].TagText,
+										},
+									},
+								}
+							end
+						end
+						return addmessage(Self2, MessageData)
+					end
+				end
+				return tab
+			end
+		end
 	end
-end--]]
-
-function ui.AddTag(plr, tag, color)
-    local Players = game:GetService("Players")
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
-    local Plr = plr
-    local ChatTag = {}
-    ChatTag[Plr] =
-        {
-            TagText = tag, --Text
-            TagColor = color, --Rgb
-            NameColor = color
-        }
-
-
-
-    local oldchanneltab
-    local oldchannelfunc
-    local oldchanneltabs = {}
-
-    --// Chat Listener
-    for i, v in pairs(getconnections(ReplicatedStorage.DefaultChatSystemChatEvents.OnNewMessage.OnClientEvent)) do
-        if
-            v.Function
-            and #debug.getupvalues(v.Function) > 0
-            and type(debug.getupvalues(v.Function)[1]) == "table"
-            and getmetatable(debug.getupvalues(v.Function)[1])
-            and getmetatable(debug.getupvalues(v.Function)[1]).GetChannel
-        then
-            oldchanneltab = getmetatable(debug.getupvalues(v.Function)[1])
-            oldchannelfunc = getmetatable(debug.getupvalues(v.Function)[1]).GetChannel
-            getmetatable(debug.getupvalues(v.Function)[1]).GetChannel = function(Self, Name)
-                local tab = oldchannelfunc(Self, Name)
-                if tab and tab.AddMessageToChannel then
-                    local addmessage = tab.AddMessageToChannel
-                    if oldchanneltabs[tab] == nil then
-                        oldchanneltabs[tab] = tab.AddMessageToChannel
-                    end
-                    tab.AddMessageToChannel = function(Self2, MessageData)
-                        if MessageData.FromSpeaker and Players[MessageData.FromSpeaker] then
-                            if ChatTag[Players[MessageData.FromSpeaker].Name] then
-                                MessageData.ExtraData = {
-                                    NameColor = ChatTag[Players[MessageData.FromSpeaker].Name].NameColor
-                                        or Players[MessageData.FromSpeaker].TeamColor.Color,
-                                    Tags = {
-                                        table.unpack(MessageData.ExtraData.Tags),
-                                        {
-                                            TagColor = ChatTag[Players[MessageData.FromSpeaker].Name].TagColor,
-                                            TagText = ChatTag[Players[MessageData.FromSpeaker].Name].TagText,
-                                        },
-                                    },
-                                }
-                            end
-                        end
-                        return addmessage(Self2, MessageData)
-                    end
-                end
-                return tab
-            end
-        end
-    end
 end
 
-for _,v in pairs(game.Players:GetPlayers()) do
-    if getPlrType(v) == "Private" and not "Owner" then
-        ui.AddTag(v.Name,"Moon Private", Color3.fromRGB(174, 1, 186))
-    end
-end
-
-ui.AddTag("moonontopez","Moon Owner", Color3.fromRGB(255, 0, 0))
-ui.AddTag("mymomisstinky5333","Moon Beta", Color3.fromRGB(77, 255, 0))
-ui.AddTag("HugeAcImprovements","Head Moon Dev", Color3.fromRGB(77, 255, 0))	
-ui.AddTag("thisaccountajokeIS","Head Moon Dev", Color3.fromRGB(77, 255, 0))	
+AddTag("Springs67BestPvper","Moon Owner", Color3.fromRGB(255, 0, 0))
+AddTag("mymomisstinky5333","Moon Beta", Color3.fromRGB(77, 255, 0))
+AddTag("HugeAcImprovements","Head Moon Dev", Color3.fromRGB(77, 255, 0))
+AddTag("thisaccountajokeIS","Head Moon Dev", Color3.fromRGB(77, 255, 0))
+AddTag("PrismUserz","NightBed Owner", Color3.fromRGB(77, 255, 0))
+AddTag("Monia_9266","NightBed Owner", Color3.fromRGB(77, 255, 0))
+AddTag("noboline_w","NightBed Owner", Color3.fromRGB(77, 255, 0))
