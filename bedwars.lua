@@ -1,10 +1,10 @@
 local function chat(msg)
-    local args = {
-        [1] = msg,
-        [2] = "All"
-    }
+	local args = {
+		[1] = msg,
+		[2] = "All"
+	}
 
-    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
+	game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer(unpack(args))
 
 end
 local lplr = game.Players.LocalPlayer
@@ -127,51 +127,6 @@ if not installed then
 	makefolder(scriptName)
 end
 local userInput = game:GetService("UserInputService")
-
-function notify(msg)
-	for i,v in pairs(game.Players.LocalPlayer:WaitForChild("PlayerGui").Notifications:GetChildren()) do
-		v:Destroy()
-	end
-	local ScreenGui = Instance.new("ScreenGui")
-	local Frame = Instance.new("Frame")
-	local TextLabel = Instance.new("TextLabel")
-	local top = Instance.new("Frame")
-
-	--Properties:
-
-	
-
-	ScreenGui.Parent = Notifications
-
-	Frame.Parent = ScreenGui
-	Frame.BackgroundColor3 = Color3.fromRGB(61, 61, 61)
-	Frame.BorderSizePixel = 0
-	Frame.Position = UDim2.new(0.850764513, 0, 0.871951222, 0)
-	Frame.Size = UDim2.new(0, 244, 0, 67)
-
-	TextLabel.Parent = Frame
-	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	TextLabel.BackgroundTransparency = 1.000
-	TextLabel.BorderSizePixel = 0
-	TextLabel.Position = UDim2.new(0, 0, 0.179104477, 0)
-	TextLabel.Size = UDim2.new(0, 244, 0, 55)
-	TextLabel.Font = Enum.Font.SourceSans
-	TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-	TextLabel.TextScaled = true
-	TextLabel.TextSize = 14.000
-	TextLabel.TextWrapped = true
-	TextLabel.Text = msg
-
-	top.Name = "top"
-	top.Parent = ScreenGui
-	top.BackgroundColor3 = Color3.fromRGB(196, 0, 231)
-	top.BorderSizePixel = 0
-	top.Position = UDim2.new(0.850764513, 0, 0.871951222, 0)
-	top.Size = UDim2.new(0, 244, 0, 12)
-	top.ZIndex = 2
-	task.wait(1.2)
-	ScreenGui:Destroy()
-end
 
 
 function newTab(name)
@@ -358,7 +313,6 @@ local Killaura = windowapi.CreateButton({
 	["Tab"] = "Combat",
 	["Function"] = function(callback)
 		if callback then
-            notify("Killaura On")
 			local anims = {
 				Normal = {
 					{CFrame = CFrame.new(1, -1, 2) * CFrame.Angles(math.rad(295), math.rad(55), math.rad(290)), Time = 0.35},
@@ -381,13 +335,13 @@ local Killaura = windowapi.CreateButton({
 						for i,v in pairs(anims.Normal) do 
 							local anim = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
 							anim:Play()
-                            task.wait(v.Time)
-								pcall(function()
-									anim:Cancel()
-								end)
-								anim2 = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0})
-								anim2:Play()
-							end
+							task.wait(v.Time)
+							pcall(function()
+								anim:Cancel()
+							end)
+							anim2 = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0})
+							anim2:Play()
+						end
 					end)
 					if sword ~= nil then
 						bedwars["SwordController"].lastAttack = game:GetService("Workspace"):GetServerTimeNow() - 0.11
@@ -408,7 +362,6 @@ local Killaura = windowapi.CreateButton({
 				end
 			until not Enabled
 		else
-            notify("Killaura Off")
 			Enabled = false
 		end
 	end,
@@ -419,11 +372,9 @@ local Velocity = windowapi.CreateButton({
 	["Tab"] = "Combat",
 	["Function"] = function(callback)
 		if callback then
-            notify("Velocity On")
 			KnockbackTable["kbDirectionStrength"] = 0
 			KnockbackTable["kbUpwardStrength"] = 0
 		else
-            notify("Velocity Off")
 			KnockbackTable["kbDirectionStrength"] = 100
 			KnockbackTable["kbUpwardStrength"] = 100
 		end
@@ -435,7 +386,6 @@ local CFrameSpeed = windowapi.CreateButton({
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
-            notify("CFrameSpeed On")
 			local Speed = 0.1
 			_G.Speed1 = true
 			local You = game.Players.LocalPlayer.Name
@@ -473,7 +423,7 @@ local CFrameSpeed = windowapi.CreateButton({
 					game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(Speed,0,0)
 				end;
 			end
-            notify("CFrameSpeed Off")
+
 		end
 	end,
 })
@@ -483,7 +433,6 @@ local HeatSeekerSpeed = windowapi.CreateButton({
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
-            notify("HeatSeekerSpeed On")
 			_G.Speed1 = true
 
 			while _G.Speed1 do wait(0.8)
@@ -503,7 +452,6 @@ local HeatSeekerSpeed = windowapi.CreateButton({
 				wait(0.05)
 				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
 			end
-            notify("HeatSeekerSpeed Off")
 		end
 	end,
 })
@@ -513,12 +461,24 @@ local LongJump = windowapi.CreateButton({
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
-            notify("LongJump On")
 			game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 			game.Workspace.Gravity = 10
 		else
 			game.Workspace.Gravity = 192.6
-            notify("LongJump Off")
+		end
+	end,
+})
+
+local HighJump = windowapi.CreateButton({
+	["Name"] = "HighJump",
+	["Tab"] = "Movement",
+	["Function"] = function(callback)
+		if callback then
+			game.Workspace.Gravity = 0
+			lplr.character.HumanoidRootPart.Velocity = lplr.character.HumanoidRootPart.Velocity + Vector3.new(0,150,0)
+		else
+			game.Workspace.Gravity = 192.6
+			lplr.Character.HumanoidRootPart.Velocity1:Destroy()
 		end
 	end,
 })
@@ -528,7 +488,6 @@ local HighJumpV2 = windowapi.CreateButton({
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
-            notify("VeloHighJump On")
 			local Velocity = Instance.new("BodyVelocity",game.Players.LocalPlayer.Character.HumanoidRootPart)
 			Velocity.Name = "Velocity1"
 			game.Workspace.Gravity = 0
@@ -536,20 +495,62 @@ local HighJumpV2 = windowapi.CreateButton({
 		else
 			game.Workspace.Gravity = 192.6
 			game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity1:Destroy()
-            notify("VeloHighJump Off")
 		end
 	end,
 })
-
-local Flight = windowapi.CreateButton({
+local isFlying = nil
+local flytime = 2.6
+local inverse = false
+local status
+Flight = windowapi.CreateButton({
 	["Name"] = "Flight",
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
-            notify("Flight On")
+			isFlying = true
 			workspace.Gravity = 0
+			flytimer = Instance.new("ScreenGui")
+			timer = Instance.new("TextLabel")
+			UIS = game:GetService("UserInputService")
+			repeat wait(0.1)
+				flytime = flytime - 0.1
+				if flytime <= 0.5 then
+					status = "unsafe"
+					timer.TextColor3 = Color3.fromRGB(255, 0, 4)
+				else
+					status = "safe"
+					timer.TextColor3 = Color3.fromRGB(0, 255, 21)
+				end
+				flytimer.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+				timer.Parent = flytimer
+				timer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				timer.BackgroundTransparency = 1.000
+				timer.Position = UDim2.new(0.499694198, 0, 0.486585349, 0)
+				timer.Size = UDim2.new(0, 59, 0, 22)
+				timer.Font = Enum.Font.SourceSans
+				timer.Text = status
+				timer.TextScaled = true
+				timer.TextSize = 14.000
+				timer.TextWrapped = true
+			until not isFlying
+			else
+				timer.TextTransparency = 1
+				flytime = 2.6
+				isFlying = false
+				workspace.Gravity = 196.2	
+		end
+	end,
+})
+
+local GravFly = windowapi.CreateButton({
+	["Name"] = "GravityFly",
+	["Tab"] = "Movement",
+	["Function"] = function(callback)
+		if callback then
+			game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+			wait()
+			game.Workspace.Gravity = 0
 		else
-            notify("Flight Off")
 			workspace.Gravity = 196.2
 		end
 	end,
@@ -560,7 +561,6 @@ local FunnyFly = windowapi.CreateButton({
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
-            notify("FunnyFly On")
 			_G.Velo = true
 
 			while _G.Velo do
@@ -568,7 +568,6 @@ local FunnyFly = windowapi.CreateButton({
 				wait(0.2)
 			end
 		else
-            notify("FunnyFly Off")
 			_G.Velo = false
 
 			while _G.Velo do
@@ -584,7 +583,6 @@ local Chams = windowapi.CreateButton({
 	["Tab"] = "Visuals",
 	["Function"] = function(callback)
 		if callback then
-            notify("Chams On")
 			local players = game.Players:GetPlayers()
 
 			for i,v in pairs(players) do
@@ -597,7 +595,6 @@ local Chams = windowapi.CreateButton({
 				esp.Parent = v.Character
 			end
 		else
-            notify("Chams doesnt work turning off lol.")
 			esp:Destroy()
 		end
 	end,
@@ -608,24 +605,20 @@ local NoFall = windowapi.CreateButton({
 	["Tab"] = "Utility",
 	["Function"] = function(callback)
 		if callback then
-            notify("NoFall On")
 			while true do wait()
 				game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.GroundHit:FireServer()
 			end
 		else
 			print("cope")
-            notify("cant turn off")
 		end
 	end,
 })
-
 local isSprinting = nil
 local Sprint = windowapi.CreateButton({
 	["Name"] = "Sprint",
 	["Tab"] = "Utility",
 	["Function"] = function(callback)
 		if callback then
-            notify("Sprint On")
 			isSprinting = true
 			repeat wait()
 				if (not bedwars["SprintController"].sprinting) then
@@ -633,19 +626,16 @@ local Sprint = windowapi.CreateButton({
 				end
 			until not isSprinting
 		else
-            notify("Sprint Off")
 			isSprinting = false
 		end
 	end,
 })
-
 local AntivoidEnabled = nil
 local AntiVoid = windowapi.CreateButton({
 	["Name"] = "AntiVoid",
 	["Tab"] = "Utility",
 	["Function"] = function(callback)
 		if callback then
-            notify("AntiVoid On")
 			AntivoidEnabled = true
 			repeat wait()
 				if lplr.Character.HumanoidRootPart.Position.Y < 10 then
@@ -658,19 +648,16 @@ local AntiVoid = windowapi.CreateButton({
 				end
 			until not AntivoidEnabled
 		else
-            notify("AntiVoid Off")
 			AntivoidEnabled = false
 		end
 	end,
 })
-
 local stealerEnabled = nil
 local Stealer = windowapi.CreateButton({
 	["Name"] = "Stealer",
 	["Tab"] = "Utility",
 	["Function"] = function(callback)
 		if callback then
-            notify("Stealer On")
 			stealerEnabled = true
 			repeat wait()
 				if bedwars["AppController"]:isAppOpen("ChestApp") then
@@ -690,7 +677,6 @@ local Stealer = windowapi.CreateButton({
 				end
 			until not stealerEnabled
 		else
-            notify("Stealer Off")
 			stealerEnabled = false
 		end
 	end,
@@ -701,44 +687,59 @@ local NoBob = windowapi.CreateButton({
 	["Tab"] = "Utility",
 	["Function"] = function(callback)
 		if callback then
-            notify("NoBob On")
 			lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(25 / 10))
 			lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (8 / 10))
 		else
-            notify("NoBob Off")
 			lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_DEPTH_OFFSET", -(8 / 10))
 			lplr.PlayerScripts.TS.controllers.global.viewmodel["viewmodel-controller"]:SetAttribute("ConstantManager_HORIZONTAL_OFFSET", (8 / 10))
 		end
 	end,
 })
 
+local XylexTexturePack = windowapi.CreateButton({
+	["Name"] = "TexturePack",
+	["Tab"] = "Utility",
+	["Function"] = function(callback)
+		if callback then
+
+		else
+			print("hiiii")
+		end
+	end,
+})
+
 AutoToxicEnabled = nil
 local AutoToxic = windowapi.CreateButton({
-    ["Name"] = "AutoToxic",
-    ["Tab"] = "Utility",
-    ["Function"] = function(callback)
-        if callback then
-            notify("AutoToxic On")
-            AutoToxicEnabled = true
-            repeat task.wait(3)
-                for _,v in pairs( game.Players:GetPlayers()) do
-                        if v.Character.Humanoid.Health == 0 then
-                            local pick = math.random(1,3)
-                            if pick == 1 then
-                                chat("L"..v.Name.." Looks like you forgot to get moon.")
-                            elseif pick == 2 then
-                                chat(v.Name.." do you eat losses for breakfast?")
-                            elseif pick == 3 then
-                                chat("Moon is sponsored by edp445, "..v.Name.." L.")
-                            end
-                        end
-                    end
-            until not AutoToxicEnabled
-        else
-            notify("AutoToxic Off")
-            AutoToxicEnabled = false
-        end
-    end,
+	["Name"] = "AutoToxic",
+	["Tab"] = "Utility",
+	["Function"] = function(callback)
+		if callback then
+			AutoToxicEnabled = true
+			local vals = {}
+			repeat task.wait()
+				for _,v in pairs( game.Players:GetPlayers()) do
+					if (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < 15 then
+						table.insert(vals,v.Name)
+					end
+						for i,z in pairs(vals) do
+							if v.Name == z then
+								table.clear(vals)
+								local pick = math.random(1,3)
+								if pick == 1 then
+									chat("L"..v.Name.." Looks like you forgot to get moon.")
+								elseif pick == 2 then
+									chat(v.Name.." do you eat losses for breakfast?")
+								elseif pick == 3 then
+									chat("Moon is sponsored by edp445, "..v.Name.." L.")
+								end
+							end
+						end
+					end	
+			until not AutoToxicEnabled
+		else
+			AutoToxicEnabled = false
+		end
+	end,
 })
 
 
@@ -811,7 +812,7 @@ function AddTag(plr, tag, color)
 	end
 end
 
-AddTag("Springs67BestPvper","Moon Owner", Color3.fromRGB(255, 0, 0))
+AddTag("bedwarsisbedwars_6 ","Moon Owner", Color3.fromRGB(255, 0, 0))
 AddTag("mymomisstinky5333","Moon Beta", Color3.fromRGB(77, 255, 0))
 AddTag("HugeAcImprovements","Head Moon Dev", Color3.fromRGB(77, 255, 0))
 AddTag("thisaccountajokeIS","Head Moon Dev", Color3.fromRGB(77, 255, 0))
