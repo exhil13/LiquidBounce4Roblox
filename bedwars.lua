@@ -303,11 +303,25 @@ windowapi["CreateButton"] = function(argstablemain)
 	UICorner_2.Parent = TextButton
 end
 
+local function GetArgs(plr)
+	return {
+		[1] = {
+			[1] = {
+				[1] = "\18",
+				[2] = game:GetService("Players").LocalPlayer.Character:FindFirstChildWhichIsA("Tool").Name,
+				[3] = "\1",
+				[4] = CFrame.lookAt(game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position,plr.Character.PrimaryPart.Position),
+				[5] = workspace:GetPartBoundsInRadius(game:GetService("Players").LocalPlayer.Character.PrimaryPart.Position, 13)
+			}
+		}
+	}
+end
+
 newTab("Combat")
 newTab("Movement")
 newTab("Visuals")
 newTab("Utility")
-
+local count = 0
 local Killaura = windowapi.CreateButton({
 	["Name"] = "Killaura",
 	["Tab"] = "Combat",
@@ -315,8 +329,8 @@ local Killaura = windowapi.CreateButton({
 		if callback then
 			local anims = {
 				Normal = {
-					{CFrame = CFrame.new(1, -1, 2) * CFrame.Angles(math.rad(295), math.rad(55), math.rad(290)), Time = 0.35},
-					{CFrame = CFrame.new(-1, 1, -2.2) * CFrame.Angles(math.rad(200), math.rad(60), math.rad(1)), Time = 0.35}
+					{CFrame = CFrame.new(1, -1, 2) * CFrame.Angles(math.rad(295), math.rad(55), math.rad(290)), Time = 0.25},
+					{CFrame = CFrame.new(-1, 1, -2.2) * CFrame.Angles(math.rad(200), math.rad(60), math.rad(1)), Time = 0.25}
 				},
 			}
 			local origC0 = cam.Viewmodel.RightHand.RightWrist.C0
@@ -326,39 +340,40 @@ local Killaura = windowapi.CreateButton({
 				if nearest ~= nil and nearest.Team ~= lplr.Team and isalive(nearest) and nearest.Character:FindFirstChild("Humanoid").Health > 0.1 and isalive(lplr) and lplr.Character:FindFirstChild("Humanoid").Health > 0.1 then
 					local sword = getSword()
 					spawn(function()
-						--local anim = Instance.new("Animation")
-						--anim.AnimationId = "rbxassetid://4947108314"
-						--local animator = lplr.Character:FindFirstChild("Humanoid"):FindFirstChild("Animator")
-						--animator:LoadAnimation(anim):Play()
-						--anim:Destroy()
-						--bedwars["ViewmodelController"]:playAnimation(15)
 						for i,v in pairs(anims.Normal) do 
 							local anim = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(v.Time), {C0 = origC0 * v.CFrame})
 							anim:Play()
-							task.wait(v.Time)
+							task.wait(v.Time+0.1)
 							pcall(function()
 								anim:Cancel()
 							end)
 							anim2 = game:GetService("TweenService"):Create(cam.Viewmodel.RightHand.RightWrist, TweenInfo.new(0.1), {C0 = origC0})
 							anim2:Play()
 						end
-					end)
-					if sword ~= nil then
-						bedwars["SwordController"].lastAttack = game:GetService("Workspace"):GetServerTimeNow() - 0.11
-						HitRemote:SendToServer({
-							["weapon"] = sword.tool,
-							["entityInstance"] = nearest.Character,
-							["validate"] = {
-								["raycast"] = {
-									["cameraPosition"] = hashFunc(cam.CFrame.Position),
-									["cursorDirection"] = hashFunc(Ray.new(cam.CFrame.Position, nearest.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction)
+						--local anim = Instance.new("Animation")
+						--anim.AnimationId = "rbxassetid://4947108314"
+						--local animator = lplr.Character:FindFirstChild("Humanoid"):FindFirstChild("Animator")
+						--animator:LoadAnimation(anim):Play()
+						--anim:Destroy()
+						--bedwars["ViewmodelController"]:playAnimation(15)
+						if sword ~= nil then
+							bedwars["SwordController"].lastAttack = game:GetService("Workspace"):GetServerTimeNow() - 0.11
+							HitRemote:SendToServer({
+								["weapon"] = sword.tool,
+								["entityInstance"] = nearest.Character,
+								["validate"] = {
+									["raycast"] = {
+										["cameraPosition"] = hashFunc(cam.CFrame.Position),
+										["cursorDirection"] = hashFunc(Ray.new(cam.CFrame.Position, nearest.Character:FindFirstChild("HumanoidRootPart").Position).Unit.Direction)
+									},
+									["targetPosition"] = hashFunc(nearest.Character:FindFirstChild("HumanoidRootPart").Position),
+									["selfPosition"] = hashFunc(lplr.Character:FindFirstChild("HumanoidRootPart").Position + ((lplr.Character:FindFirstChild("HumanoidRootPart").Position - nearest.Character:FindFirstChild("HumanoidRootPart").Position).magnitude > 14 and (CFrame.lookAt(lplr.Character:FindFirstChild("HumanoidRootPart").Position, nearest.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0)))
 								},
-								["targetPosition"] = hashFunc(nearest.Character:FindFirstChild("HumanoidRootPart").Position),
-								["selfPosition"] = hashFunc(lplr.Character:FindFirstChild("HumanoidRootPart").Position + ((lplr.Character:FindFirstChild("HumanoidRootPart").Position - nearest.Character:FindFirstChild("HumanoidRootPart").Position).magnitude > 14 and (CFrame.lookAt(lplr.Character:FindFirstChild("HumanoidRootPart").Position, nearest.Character:FindFirstChild("HumanoidRootPart").Position).LookVector * 4) or Vector3.new(0, 0, 0)))
-							},
-							["chargedAttack"] = {["chargeRatio"] = 0.8}
-						})
-					end
+								["chargedAttack"] = {["chargeRatio"] = 0.6}
+							})
+						end
+						
+					end)
 				end
 			until not Enabled
 		else
@@ -377,6 +392,50 @@ local Velocity = windowapi.CreateButton({
 		else
 			KnockbackTable["kbDirectionStrength"] = 100
 			KnockbackTable["kbUpwardStrength"] = 100
+		end
+	end,
+})
+
+local HypixelFly = windowapi.CreateButton({
+	["Name"] = "HypixelFly | NEW",
+	["Tab"] = "Movement",
+	["Function"] = function(callback)
+		if callback then
+			_G.HypixelFly = true
+			game.Workspace.Gravity = 0
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame+ Vector3.new(0,2,0)
+			while _G.HypixelFly == true do wait(0.2)
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
+				wait(1.1)
+			end
+		else
+			_G.HypixelFly = false
+			
+			while _G.HypixelFly == true do wait(0.2)
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait(1)
+			end
+			game.Workspace.Gravity = 192.6
 		end
 	end,
 })
@@ -428,43 +487,23 @@ local CFrameSpeed = windowapi.CreateButton({
 	end,
 })
 
-local HeatSeekerSpeed = windowapi.CreateButton({
-	["Name"] = "HeatSeekerSpeed",
-	["Tab"] = "Movement",
-	["Function"] = function(callback)
-		if callback then
-			_G.Speed1 = true
-
-			while _G.Speed1 do wait(0.8)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 150
-				wait(0.05)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
-				wait(0.05)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
-			end
-		else
-			_G.Speed1 = false
-
-			while _G.Speed1 do wait(0.8)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 150
-				wait(0.05)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
-				wait(0.05)
-				game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
-			end
-		end
-	end,
-})
-
+local longjumpenabled = nil
 local LongJump = windowapi.CreateButton({
 	["Name"] = "LongJump",
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
+			longjumpenabled = true
 			game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 			game.Workspace.Gravity = 10
+			for i = 1,66 do wait(0.01)
+				if longjumpenabled then
+					lplr.Character.HumanoidRootPart.CFrame = lplr.Character.HumanoidRootPart.CFrame + Vector3.new(0,0.154,0)
+				end
+			end
 		else
 			game.Workspace.Gravity = 192.6
+			longjumpenabled = false
 		end
 	end,
 })
@@ -498,12 +537,13 @@ local HighJumpV2 = windowapi.CreateButton({
 		end
 	end,
 })
+
 local isFlying = nil
 local flytime = 2.6
 local inverse = false
 local status
 Flight = windowapi.CreateButton({
-	["Name"] = "Flight",
+	["Name"] = "Flight | New Fly Timer",
 	["Tab"] = "Movement",
 	["Function"] = function(callback)
 		if callback then
@@ -521,6 +561,11 @@ Flight = windowapi.CreateButton({
 					status = "safe"
 					timer.TextColor3 = Color3.fromRGB(0, 255, 21)
 				end
+
+				if flytime > 0.5 and flytime < 1.4 then
+					status = "safe"
+					timer.TextColor3 = Color3.fromRGB(255, 225, 0)
+				end
 				flytimer.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 				timer.Parent = flytimer
 				timer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -533,25 +578,11 @@ Flight = windowapi.CreateButton({
 				timer.TextSize = 14.000
 				timer.TextWrapped = true
 			until not isFlying
-			else
-				timer.TextTransparency = 1
-				flytime = 2.6
-				isFlying = false
-				workspace.Gravity = 196.2	
-		end
-	end,
-})
-
-local GravFly = windowapi.CreateButton({
-	["Name"] = "GravityFly",
-	["Tab"] = "Movement",
-	["Function"] = function(callback)
-		if callback then
-			game.Players.LocalPlayer.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-			wait()
-			game.Workspace.Gravity = 0
 		else
-			workspace.Gravity = 196.2
+			timer.TextTransparency = 1
+			flytime = 2.6
+			isFlying = false
+			workspace.Gravity = 196.2	
 		end
 	end,
 })
@@ -574,6 +605,27 @@ local FunnyFly = windowapi.CreateButton({
 				game.Players.LocalPlayer.character.HumanoidRootPart.Velocity = game.Players.LocalPlayer.character.HumanoidRootPart.Velocity + Vector3.new(0,40,0)
 				wait(0.2)
 			end
+		end
+	end,
+})
+
+local FunnyModeEnabled = nil
+local FunnyMode = windowapi.CreateButton({
+	["Name"] = "FunnyMode | New",
+	["Tab"] = "Visuals",
+	["Function"] = function(callback)
+		if callback then
+			FunnyModeEnabled = true
+			damagetab = debug.getupvalue(bedwars["DamageIndicator"], 2)
+			damagetab.strokeThickness = 12
+			damagetab.textSize = 28
+			damagetab.blowUpDuration = 1
+			damagetab.blowUpSize = 999999
+		else
+			damagetab.strokeThickness = 1.5
+			damagetab.textSize = 28
+			damagetab.blowUpDuration = 0.125
+			damagetab.blowUpSize = 76
 		end
 	end,
 })
@@ -652,6 +704,7 @@ local AntiVoid = windowapi.CreateButton({
 		end
 	end,
 })
+
 local stealerEnabled = nil
 local Stealer = windowapi.CreateButton({
 	["Name"] = "Stealer",
@@ -696,18 +749,6 @@ local NoBob = windowapi.CreateButton({
 	end,
 })
 
-local XylexTexturePack = windowapi.CreateButton({
-	["Name"] = "TexturePack",
-	["Tab"] = "Utility",
-	["Function"] = function(callback)
-		if callback then
-
-		else
-			print("hiiii")
-		end
-	end,
-})
-
 AutoToxicEnabled = nil
 local AutoToxic = windowapi.CreateButton({
 	["Name"] = "AutoToxic",
@@ -716,34 +757,31 @@ local AutoToxic = windowapi.CreateButton({
 		if callback then
 			AutoToxicEnabled = true
 			local vals = {}
-			repeat task.wait()
+			repeat task.wait(5)
 				for _,v in pairs( game.Players:GetPlayers()) do
 					if (v.Character.HumanoidRootPart.Position - lplr.Character.HumanoidRootPart.Position).Magnitude < 15 then
 						table.insert(vals,v.Name)
 					end
-						for i,z in pairs(vals) do
-							if v.Name == z then
-								table.clear(vals)
-								local pick = math.random(1,3)
-								if pick == 1 then
-									chat("L"..v.Name.." Looks like you forgot to get moon.")
-								elseif pick == 2 then
-									chat(v.Name.." do you eat losses for breakfast?")
-								elseif pick == 3 then
-									chat("Moon is sponsored by edp445, "..v.Name.." L.")
-								end
+					for i,z in pairs(vals) do
+						if v.Name == z then
+							table.clear(vals)
+							local pick = math.random(1,3)
+							if pick == 1 then
+								chat("L"..v.Name.." Looks like you forgot to get moon.")
+							elseif pick == 2 then
+								chat(v.Name.." do you eat losses for breakfast?")
+							elseif pick == 3 then
+								chat("Moon is sponsored by edp445, "..v.Name.." L.")
 							end
 						end
-					end	
+					end
+				end	
 			until not AutoToxicEnabled
 		else
 			AutoToxicEnabled = false
 		end
 	end,
 })
-
-
-
 
 --[[for _,v in pairs(states) do
 	if v == true then
@@ -813,8 +851,8 @@ function AddTag(plr, tag, color)
 end
 
 AddTag("bedwarsisbedwars_6 ","Moon Owner", Color3.fromRGB(255, 0, 0))
-AddTag("wefwefwef","Moon Beta", Color3.fromRGB(77, 255, 0))
-AddTag("synapse_lololol","Head Moon Dev", Color3.fromRGB(77, 255, 0))
+AddTag("mymomisstinky5333","Moon Beta", Color3.fromRGB(77, 255, 0))
+AddTag("HugeAcImprovements","Head Moon Dev", Color3.fromRGB(77, 255, 0))
 AddTag("thisaccountajokeIS","Head Moon Dev", Color3.fromRGB(77, 255, 0))
 AddTag("PrismUserz","NightBed Owner", Color3.fromRGB(77, 255, 0))
 AddTag("Monia_9266","NightBed Owner", Color3.fromRGB(77, 255, 0))
