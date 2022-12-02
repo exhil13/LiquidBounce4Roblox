@@ -662,7 +662,7 @@ local betterNuker = windowapi.CreateButton({
 
 						game:GetService("ReplicatedStorage").RemoteEvent:FireServer(unpack(args))
 					end
-			until not AutoToxicEnabled
+			until not MegaNuker
 		else
 			MegaNuker = false
 		end
