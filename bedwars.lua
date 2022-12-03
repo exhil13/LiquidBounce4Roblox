@@ -396,50 +396,6 @@ local Velocity = windowapi.CreateButton({
 	end,
 })
 
-local HypixelFly = windowapi.CreateButton({
-	["Name"] = "HypixelFly | NEW",
-	["Tab"] = "Movement",
-	["Function"] = function(callback)
-		if callback then
-			_G.HypixelFly = true
-			game.Workspace.Gravity = 0
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame+ Vector3.new(0,2,0)
-			while _G.HypixelFly == true do wait(0.2)
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 1
-				wait(1.1)
-			end
-		else
-			_G.HypixelFly = false
-			
-			while _G.HypixelFly == true do wait(0.2)
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
-				wait()
-				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
-				wait(1)
-			end
-			game.Workspace.Gravity = 192.6
-		end
-	end,
-})
-
 local CFrameSpeed = windowapi.CreateButton({
 	["Name"] = "CFrameSpeed",
 	["Tab"] = "Movement",
@@ -534,6 +490,48 @@ local HighJumpV2 = windowapi.CreateButton({
 		else
 			game.Workspace.Gravity = 192.6
 			game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity1:Destroy()
+		end
+	end,
+})
+
+local BedwarsFly = windowapi.CreateButton({
+	["Name"] = "BedwarsFly",
+	["Tab"] = "Movement",
+	["Function"] = function(callback)
+		if callback then
+			_G.BedwarsFly = true
+			game.Workspace.Gravity = 0
+			while _G.BedwarsFly == true do wait(0.2)
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait(0.9)
+			end
+		else
+			_G.BedwarsFly = false
+			
+			while _G.BedwarsFly == true do wait(0.2)
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.9
+				wait()
+				game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.lookVector * 0.6
+			end
+			game.Workspace.Gravity = 192.6
 		end
 	end,
 })
@@ -852,7 +850,7 @@ end
 
 AddTag("bedwarsisbedwars_6 ","Moon Owner", Color3.fromRGB(255, 0, 0))
 AddTag("mymomisstinky5333","Moon Beta", Color3.fromRGB(77, 255, 0))
-AddTag("HugeAcImprovements","Head Moon Dev", Color3.fromRGB(77, 255, 0))
+AddTag("ewfwefdfewfdwefdw","Head Moon Dev", Color3.fromRGB(77, 255, 0))
 AddTag("thisaccountajokeIS","Head Moon Dev", Color3.fromRGB(77, 255, 0))
 AddTag("PrismUserz","NightBed Owner", Color3.fromRGB(77, 255, 0))
 AddTag("Monia_9266","NightBed Owner", Color3.fromRGB(77, 255, 0))
