@@ -575,6 +575,75 @@ VisualsSection:NewButton("TabList", "TabList", function()
     end
 end)
 
+VisualsSection:NewButton("Cape", "Cape", function()
+    local player = game.Players.LocalPlayer
+    local chr = player.Character
+    repeat wait() until player and player.Character and player.Character:FindFirstChild("Humanoid")
+    if player.Character:FindFirstChild("Torso") then
+        torso = player.Character.Torso
+    else
+        torso = player.Character.UpperTorso
+    end
+    local p = Instance.new("Part",torso.Parent)
+    p.Name = "LiquidBounceCape"
+    p.Anchored = false
+    p.CanCollide = false
+    p.TopSurface = 0
+    p.BottomSurface = 0
+    p.Color = Color3.fromRGB(89, 108, 236)
+    p.FormFactor = "Custom"
+    p.Size = Vector3.new(0.2,0.2,0.2)
+    local msh = Instance.new('BlockMesh',p)
+    msh.Scale = Vector3.new(9,16.7,0.5)
+    local motor = Instance.new("Motor",p)
+    local fakepart = Instance.new("Part",p)
+    local decal = Instance.new("Decal",fakepart)
+    fakepart.Size = Vector3.new(2.2, 3.4, 0.375)
+    p.Material = "Neon"
+    decal.Face = "Back"
+    local weld = Instance.new("WeldConstraint",p)
+    fakepart.CFrame = msh.Parent.CFrame
+    fakepart.Transparency = 1
+    fakepart.CanCollide = false
+    weld.Part0 = msh.Parent
+    weld.Part1 = fakepart
+    motor.Part0 = p
+    motor.Part1 = torso
+    motor.MaxVelocity = 0.01
+    motor.C0 = CFrame.new(0,1.9,0) * CFrame.Angles(0,math.rad(90),0)
+    motor.C1 = CFrame.new(0,1,0.45) * CFrame.Angles(0,math.rad(90),0)
+    local wave = false
+    local id2 = "9087127577"
+    local part = Instance.new("Part",p)
+    part.Size = Vector3.new(2.009, 2.8, 0.374)
+    part.CFrame = p.CFrame
+    part.Transparency = 1
+    part.CanCollide = false
+    part.Massless = true
+    repeat wait(1/44)
+        --decal.Texture = "rbxassetid://8668851598"
+        local ang = 0.1
+        local oldmag = torso.Velocity.magnitude
+        local mv = 0.002
+        if wave then
+            ang = ang + ((torso.Velocity.magnitude/10) * 0.05) + 0.05
+            wave = false
+        else
+            wave = true
+        end
+        ang = ang + math.min(torso.Velocity.magnitude/11,0.5)
+        motor.MaxVelocity = math.min((torso.Velocity.magnitude/111), 0.04) + mv
+        motor.DesiredAngle = -ang
+        if motor.CurrentAngle < -0.2 and motor.DesiredAngle > -0.2 then
+            motor.MaxVelocity = 0.04
+        end
+        repeat wait() until motor.CurrentAngle == motor.DesiredAngle or math.abs(torso.Velocity.magnitude - oldmag) >= (torso.Velocity.magnitude/10) + 1
+        if torso.Velocity.magnitude < 0.1 then
+            wait(0.1)
+        end
+    until not p or p.Parent ~= torso.Parent
+end)
+
 --Utility
 
 --More vape stuff (i think)
@@ -633,7 +702,7 @@ UtilitySection:NewToggle("Antivoid", "Antivoid", function(state)
     if state then
         local e = Instance.new("Part",workspace)
 		e.Size = Vector3.new(99999999,2,999999999999)
-		e.Position = Vector3.new(0,27,0)
+		e.Position = Vector3.new(0,20,0)
 		e.Anchored = true
 		e.BrickColor = BrickColor.new("Royal purple")
 		e.Transparency = 0.5
@@ -669,3 +738,80 @@ end)
 UtilitySection:NewSlider("Gravity", "Gravity", 192.6, 1, function(grav) -- 500 (MaxValue) | 0 (MinValue)
     game.Workspace.Gravity = grav
 end)
+
+--Scripts - This is where if you want to add something extra, put it here
+
+ScriptsSection:NewKeybind("TeleportFlight", "TeleportFlight", Enum.KeyCode.L, function()
+    _G.Speed1 = false
+	lplr.Character.Humanoid.WalkSpeed = 0
+    game.Workspace.Gravity = 0
+    for i=1,4 do wait(0.46)
+        lplr.Character.HumanoidRootPart.CFrame = lplr.Character.HumanoidRootPart.CFrame + lplr.Character.HumanoidRootPart.CFrame.lookVector * 13
+    end
+    _G.Speed1 = true
+    lplr.Character.Humanoid.WalkSpeed = 16
+    game.Workspace.Gravity = 192.6
+end)
+
+ScriptsSection:NewButton("SquadsBreakAllbeds", "requires bed aura on.", function()
+    local ClosestBedMag = math.huge
+    local ClosestBed = false
+    local lplr = game.Players.LocalPlayer
+    function GetNearestBedToPosition()
+    for i,v in pairs(game.Workspace:GetChildren()) do
+    if v.Name == "bed" and v:FindFirstChild("Covers") and v.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
+    if (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude < ClosestBedMag then
+    ClosestBedMag = (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude
+    ClosestBed = v
+    end
+    end
+    end
+    return ClosestBed
+    end
+    local real = GetNearestBedToPosition().Position
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1000,3009,3900)
+    task.wait(1)
+    game.Players.LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(real) + Vector3.new(0,5,0)
+    wait(4.4)   
+    local ClosestBedMag = math.huge
+    local ClosestBed = false
+    local lplr = game.Players.LocalPlayer
+    function GetNearestBedToPosition()
+    for i,v in pairs(game.Workspace:GetChildren()) do
+    if v.Name == "bed" and v:FindFirstChild("Covers") and v.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
+    if (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude < ClosestBedMag then
+    ClosestBedMag = (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude
+    ClosestBed = v
+    end
+    end
+    end
+    return ClosestBed
+    end
+    local real = GetNearestBedToPosition().Position
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1000,3009,3900)
+    task.wait(1)
+    game.Players.LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(real) + Vector3.new(0,5,0)
+    wait(4.4)
+    lplr.Character.Humanoid.Health = 0
+    wait(3.55)
+    local ClosestBedMag = math.huge
+    local ClosestBed = false
+    local lplr = game.Players.LocalPlayer
+    function GetNearestBedToPosition()
+    for i,v in pairs(game.Workspace:GetChildren()) do
+    if v.Name == "bed" and v:FindFirstChild("Covers") and v.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
+    if (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude < ClosestBedMag then
+    ClosestBedMag = (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude
+    ClosestBed = v
+    end
+    end
+    end
+    return ClosestBed
+    end
+    local real = GetNearestBedToPosition().Position
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1000,3009,3900)
+    task.wait(1)
+    game.Players.LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(real) + Vector3.new(0,5,0)
+end)
+
+notify("Has succesfully loaded!", "LiquidBounce", 3)
