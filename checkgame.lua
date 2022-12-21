@@ -6,7 +6,7 @@ game:GetService("Players").LocalPlayer.OnTeleport:Connect(function(State)
     end
 end)
 if game.PlaceId == 6872274481 or game.PlaceId == 8560631822 or game.PlaceId == 8444591321 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/exhil13/ew08ufwe0f/3kdIKfmsdSf/bedwars.lua", true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/exhil13/LiquidBounce4Roblox/3kdIKfmsdSf/kavobedwars.lua", true))()
 elseif game.PlaceId == 10255454029 then
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/exhil13/ew08ufwe0f/3kdIKfmsdSf/bedwars.lua", true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/exhil13/LiquidBounce4Roblox/3kdIKfmsdSf/kavobedwars.lua", true))()
 end
