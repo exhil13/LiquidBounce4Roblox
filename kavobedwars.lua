@@ -125,7 +125,7 @@ local Enabled = true
 
 --End of the skidded stuff (mostly) lol
 
-function notify(name, msg, timer)
+function notify(name, msg, timer)--springs
     local ScreenGui = Instance.new("ScreenGui")
     local TextLabel = Instance.new("TextLabel")
     local TextLabel_2 = Instance.new("TextLabel")
@@ -182,7 +182,7 @@ local ScriptsSection = Scripts:NewSection("Scripts")
 
 --Combat
 
-CombatSection:NewToggle("Killaura", "Killaura", function(state)
+CombatSection:NewToggle("Killaura", "Killaura", function(state)--moon
     if state then
         local anims = { --Moon stuff that was probably helped by vape no cap
             Normal = {
@@ -231,7 +231,7 @@ CombatSection:NewToggle("Killaura", "Killaura", function(state)
     end
 end)
 
-CombatSection:NewToggle("Velocity", "Velocity", function(state)
+CombatSection:NewToggle("Velocity", "Velocity", function(state)--springs
     if state then
         KnockbackTable["kbDirectionStrength"] = 0
 		KnockbackTable["kbUpwardStrength"] = 0
@@ -243,7 +243,7 @@ end)
 
 --Movement
 
-MovementSection:NewToggle("AcSpeed1", "CFrame lol", function(state)
+MovementSection:NewToggle("AcSpeed1", "CFrame lol", function(state)--springs
     if state then
         local Speed = 0.22
 			_G.Speed1 = true
@@ -264,28 +264,11 @@ MovementSection:NewToggle("AcSpeed1", "CFrame lol", function(state)
 			end;
 		end
     else
-        local Speed = 0.22
-			_G.Speed1 = false
-			local You = game.Players.LocalPlayer.Name
-			local UIS = game:GetService("UserInputService")
-			while _G.Speed1 do wait()
-			if UIS:IsKeyDown(Enum.KeyCode.W) then
-				game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(0,0,-Speed)
-			end;
-			if UIS:IsKeyDown(Enum.KeyCode.A) then
-				game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(-Speed,0,0)
-			end;
-			if UIS:IsKeyDown(Enum.KeyCode.S) then
-				game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(0,0,Speed)
-			end;
-			if UIS:IsKeyDown(Enum.KeyCode.D) then
-				game:GetService("Workspace")[You].HumanoidRootPart.CFrame = game:GetService("Workspace")[You].HumanoidRootPart.CFrame * CFrame.new(Speed,0,0)
-			end;
-		end
+		_G.Speed1 = false
     end
 end)
 
-MovementSection:NewToggle("AcSpeed2", "HeatSeeker lol", function(state)
+MovementSection:NewToggle("AcSpeed2", "HeatSeeker lol", function(state)--springs
     if state then
         _G.HeatSeeker = true
 
@@ -302,13 +285,13 @@ MovementSection:NewToggle("AcSpeed2", "HeatSeeker lol", function(state)
     end
 end)
 
-MovementSection:NewKeybind("Flight", "Flight", Enum.KeyCode.R, function()
+MovementSection:NewKeybind("Flight", "Flight", Enum.KeyCode.R, function()--springs even though its gravity lmao
 	game.Workspace.Gravity = 0
     wait(2.4)
     game.Workspace.Gravity = 192.6
 end)
 
-MovementSection:NewKeybind("Longjump", "Longjump", Enum.KeyCode.J, function()
+MovementSection:NewKeybind("Longjump", "Longjump", Enum.KeyCode.J, function()--springs
 	lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
     wait(0.48)
     lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
@@ -320,7 +303,8 @@ MovementSection:NewKeybind("Longjump", "Longjump", Enum.KeyCode.J, function()
     lplr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
 end)
 
-MovementSection:NewKeybind("Highjump", "Highjump", Enum.KeyCode.J, function()
+
+MovementSection:NewKeybind("Highjump", "Highjump", Enum.KeyCode.H, function()--springs
 	local Velocity = Instance.new("BodyVelocity",game.Players.LocalPlayer.Character.HumanoidRootPart)
     Velocity.Name = "Velocity1"
     game.Workspace.Gravity = 0
@@ -336,7 +320,7 @@ VisualsSection:NewKeybind("Toggle Ui", "Toggle Ui", Enum.KeyCode.RightShift, fun
     Library:ToggleUI()
 end)
 
-VisualsSection:NewButton("Chams", "Chams", function()
+VisualsSection:NewButton("AllHudIn1", "AllHudIn1", function()--springs
     local players = game.Players:GetPlayers()
 
     for i,v in pairs(players) do
@@ -348,21 +332,6 @@ VisualsSection:NewButton("Chams", "Chams", function()
         esp.OutlineTransparency = 0
         esp.Parent = v.Character
     end
-    game.Players.PlayerAdded:Connect(function(plr)
-        plr.CharacterAdded:Connect(function(chr)
-            local esp = Instance.new("Highlight")
-            esp = Instance.new("Highlight")
-            esp.Name = v.Name
-            esp.FillTransparency = 0.5
-            esp.FillColor = Color3.new(0.368627, 0.345098, 1)
-            esp.OutlineColor = Color3.new(0.258824, 0.517647, 1)
-            esp.OutlineTransparency = 0
-            esp.Parent = v.Character
-        end)
-    end)
-end)
-
-VisualsSection:NewButton("Logo", "Logo", function()
     local Logo = Instance.new("ScreenGui")
     local MainFrame = Instance.new("Frame")
     local MainFrame2 = Instance.new("Frame")
@@ -383,42 +352,10 @@ VisualsSection:NewButton("Logo", "Logo", function()
     TextLabel.BackgroundTransparency = 1.000
     TextLabel.Size = UDim2.new(0, 298, 0, 44)
     TextLabel.Font = Enum.Font.SourceSans
-    TextLabel.Text = "LiquidBounce | Beta | B1.0"
+    TextLabel.Text = "LiquidBounce | Beta | B1.1"
     TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
     TextLabel.TextSize = 30.000
     TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-    while true do wait(3.4)
-        if lplr.Character.Humanoid.health == 0 then
-            wait(1)
-            local Logo = Instance.new("ScreenGui")
-            local MainFrame = Instance.new("Frame")
-            local MainFrame2 = Instance.new("Frame")
-            local TextLabel = Instance.new("TextLabel")
-            Logo.Name = "Logo"
-            Logo.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-            Logo.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-            MainFrame.Name = "MainFrame"
-            MainFrame.Parent = Logo
-            MainFrame.BackgroundColor3 = Color3.fromRGB(90, 107, 255)
-            MainFrame.Size = UDim2.new(0, 298, 0, 54)
-            MainFrame2.Name = "MainFrame2"
-            MainFrame2.Parent = MainFrame
-            MainFrame2.BackgroundColor3 = Color3.fromRGB(157, 175, 255)
-            MainFrame2.Size = UDim2.new(0, 298, 0, 44)
-            TextLabel.Parent = MainFrame2
-            TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            TextLabel.BackgroundTransparency = 1.000
-            TextLabel.Size = UDim2.new(0, 298, 0, 44)
-            TextLabel.Font = Enum.Font.SourceSans
-            TextLabel.Text = "LiquidBounce | Beta | B1.0"
-            TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
-            TextLabel.TextSize = 30.000
-            TextLabel.TextXAlignment = Enum.TextXAlignment.Left
-        end
-    end
-end)
-
-VisualsSection:NewButton("TabList", "TabList", function()
     local TabList = Instance.new("ScreenGui")
     local Frame = Instance.new("Frame")
     local Combat = Instance.new("TextLabel")
@@ -494,9 +431,200 @@ VisualsSection:NewButton("TabList", "TabList", function()
     UICorner_5.CornerRadius = UDim.new(0, 3)
     UICorner_5.Parent = Scripts
 
-    while true do wait(3.4)
+    game.Players.PlayerAdded:Connect(function(plr)
+        plr.CharacterAdded:Connect(function(chr)
+            local esp = Instance.new("Highlight")
+            esp = Instance.new("Highlight")
+            esp.Name = v.Name
+            esp.FillTransparency = 0.5
+            esp.FillColor = Color3.new(0.368627, 0.345098, 1)
+            esp.OutlineColor = Color3.new(0.258824, 0.517647, 1)
+            esp.OutlineTransparency = 0
+            esp.Parent = v.Character
+        end)
+    end)
+end)
+
+VisualsSection:NewButton("Chams", "Chams", function()--springs
+    local players = game.Players:GetPlayers()
+
+    for i,v in pairs(players) do
+        esp = Instance.new("Highlight")
+        esp.Name = v.Name
+        esp.FillTransparency = 0.5
+        esp.FillColor = Color3.new(0.368627, 0.345098, 1)
+        esp.OutlineColor = Color3.new(0.258824, 0.517647, 1)
+        esp.OutlineTransparency = 0
+        esp.Parent = v.Character
+    end
+    game.Players.PlayerAdded:Connect(function(plr)
+        plr.CharacterAdded:Connect(function(chr)
+            local esp = Instance.new("Highlight")
+            esp = Instance.new("Highlight")
+            esp.Name = v.Name
+            esp.FillTransparency = 0.5
+            esp.FillColor = Color3.new(0.368627, 0.345098, 1)
+            esp.OutlineColor = Color3.new(0.258824, 0.517647, 1)
+            esp.OutlineTransparency = 0
+            esp.Parent = v.Character
+        end)
+    end)
+end)
+
+VisualsSection:NewButton("Health", "Health", function()--springs
+    local ScreenGui = Instance.new("ScreenGui")
+    local TextLabel = Instance.new("TextLabel")
+    local UICorner = Instance.new("UICorner")
+    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    TextLabel.Parent = ScreenGui
+    TextLabel.BackgroundColor3 = Color3.fromRGB(105, 105, 255)
+    TextLabel.BackgroundTransparency = 0.500
+    TextLabel.Position = UDim2.new(0.268705249, 0, 0.52098763, 0)
+    TextLabel.Size = UDim2.new(0, 230, 0, 73)
+    TextLabel.Font = Enum.Font.SourceSans
+    TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+    TextLabel.TextSize = 14.000
+    UICorner.Parent = TextLabel
+    while true do wait()
+        TextLabel.Text = lplr.Character.Humanoid.Health
+    end
+end)
+
+VisualsSection:NewButton("Logo", "Logo", function()--springs
+    local Logo = Instance.new("ScreenGui")
+    local MainFrame = Instance.new("Frame")
+    local MainFrame2 = Instance.new("Frame")
+    local TextLabel = Instance.new("TextLabel")
+    Logo.Name = "Logo"
+    Logo.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    Logo.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    MainFrame.Name = "MainFrame"
+    MainFrame.Parent = Logo
+    MainFrame.BackgroundColor3 = Color3.fromRGB(90, 107, 255)
+    MainFrame.Size = UDim2.new(0, 298, 0, 54)
+    MainFrame2.Name = "MainFrame2"
+    MainFrame2.Parent = MainFrame
+    MainFrame2.BackgroundColor3 = Color3.fromRGB(157, 175, 255)
+    MainFrame2.Size = UDim2.new(0, 298, 0, 44)
+    TextLabel.Parent = MainFrame2
+    TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    TextLabel.BackgroundTransparency = 1.000
+    TextLabel.Size = UDim2.new(0, 298, 0, 44)
+    TextLabel.Font = Enum.Font.SourceSans
+    TextLabel.Text = "LiquidBounce | Beta | B1.1"
+    TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+    TextLabel.TextSize = 30.000
+    TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+    while true do wait()
         if lplr.Character.Humanoid.health == 0 then
-            wait(1)
+            wait(4)
+            local Logo = Instance.new("ScreenGui")
+            local MainFrame = Instance.new("Frame")
+            local MainFrame2 = Instance.new("Frame")
+            local TextLabel = Instance.new("TextLabel")
+            Logo.Name = "Logo"
+            Logo.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+            Logo.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+            MainFrame.Name = "MainFrame"
+            MainFrame.Parent = Logo
+            MainFrame.BackgroundColor3 = Color3.fromRGB(90, 107, 255)
+            MainFrame.Size = UDim2.new(0, 298, 0, 54)
+            MainFrame2.Name = "MainFrame2"
+            MainFrame2.Parent = MainFrame
+            MainFrame2.BackgroundColor3 = Color3.fromRGB(157, 175, 255)
+            MainFrame2.Size = UDim2.new(0, 298, 0, 44)
+            TextLabel.Parent = MainFrame2
+            TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            TextLabel.BackgroundTransparency = 1.000
+            TextLabel.Size = UDim2.new(0, 298, 0, 44)
+            TextLabel.Font = Enum.Font.SourceSans
+            TextLabel.Text = "LiquidBounce | Beta | B1.1"
+            TextLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+            TextLabel.TextSize = 30.000
+            TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+        end
+    end
+end)
+
+VisualsSection:NewButton("TabList", "TabList", function() --springs
+    local TabList = Instance.new("ScreenGui")
+    local Frame = Instance.new("Frame")
+    local Combat = Instance.new("TextLabel")
+    local UICorner = Instance.new("UICorner")
+    local Movement = Instance.new("TextLabel")
+    local UICorner_2 = Instance.new("UICorner")
+    local Visuals = Instance.new("TextLabel")
+    local UICorner_3 = Instance.new("UICorner")
+    local Utility = Instance.new("TextLabel")
+    local UICorner_4 = Instance.new("UICorner")
+    local Scripts = Instance.new("TextLabel")
+    local UICorner_5 = Instance.new("UICorner")
+    TabList.Name = "TabList"
+    TabList.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    TabList.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    Frame.Parent = TabList
+    Frame.BackgroundColor3 = Color3.fromRGB(90, 107, 255)
+    Frame.Position = UDim2.new(0, 0, 0.0938271582, 0)
+    Frame.Size = UDim2.new(0, 166, 0, 256)
+    Combat.Name = "Combat"
+    Combat.Parent = Frame
+    Combat.BackgroundColor3 = Color3.fromRGB(157, 175, 255)
+    Combat.Position = UDim2.new(0, 0, 0.0386082828, 0)
+    Combat.Size = UDim2.new(0, 166, 0, 38)
+    Combat.Font = Enum.Font.SourceSans
+    Combat.Text = "Combat"
+    Combat.TextColor3 = Color3.fromRGB(0, 0, 0)
+    Combat.TextSize = 29.000
+    UICorner.CornerRadius = UDim.new(0, 3)
+    UICorner.Parent = Combat
+    Movement.Name = "Movement"
+    Movement.Parent = Frame
+    Movement.BackgroundColor3 = Color3.fromRGB(157, 175, 255)
+    Movement.Position = UDim2.new(0, 0, 0.226004571, 0)
+    Movement.Size = UDim2.new(0, 166, 0, 38)
+    Movement.Font = Enum.Font.SourceSans
+    Movement.Text = "Movement"
+    Movement.TextColor3 = Color3.fromRGB(0, 0, 0)
+    Movement.TextSize = 29.000
+    UICorner_2.CornerRadius = UDim.new(0, 3)
+    UICorner_2.Parent = Movement
+    Visuals.Name = "Visuals"
+    Visuals.Parent = Frame
+    Visuals.BackgroundColor3 = Color3.fromRGB(157, 175, 255)
+    Visuals.Position = UDim2.new(0, 0, 0.425638139, 0)
+    Visuals.Size = UDim2.new(0, 166, 0, 38)
+    Visuals.Font = Enum.Font.SourceSans
+    Visuals.Text = "Visuals"
+    Visuals.TextColor3 = Color3.fromRGB(0, 0, 0)
+    Visuals.TextSize = 29.000
+    UICorner_3.CornerRadius = UDim.new(0, 3)
+    UICorner_3.Parent = Visuals
+    Utility.Name = "Utility"
+    Utility.Parent = Frame
+    Utility.BackgroundColor3 = Color3.fromRGB(157, 175, 255)
+    Utility.Position = UDim2.new(0, 0, 0.61562705, 0)
+    Utility.Size = UDim2.new(0, 166, 0, 38)
+    Utility.Font = Enum.Font.SourceSans
+    Utility.Text = "Utility"
+    Utility.TextColor3 = Color3.fromRGB(0, 0, 0)
+    Utility.TextSize = 29.000
+    UICorner_4.CornerRadius = UDim.new(0, 3)
+    UICorner_4.Parent = Utility
+    Scripts.Name = "Scripts"
+    Scripts.Parent = Frame
+    Scripts.BackgroundColor3 = Color3.fromRGB(157, 175, 255)
+    Scripts.Position = UDim2.new(0, 0, 0.8070333, 0)
+    Scripts.Size = UDim2.new(0, 166, 0, 38)
+    Scripts.Font = Enum.Font.SourceSans
+    Scripts.Text = "Scripts"
+    Scripts.TextColor3 = Color3.fromRGB(0, 0, 0)
+    Scripts.TextSize = 29.000
+    UICorner_5.CornerRadius = UDim.new(0, 3)
+    UICorner_5.Parent = Scripts
+    while true do wait()
+        if lplr.Character.Humanoid.health == 0 then
+            wait(4)
             local TabList = Instance.new("ScreenGui")
             local Frame = Instance.new("Frame")
             local Combat = Instance.new("TextLabel")
@@ -575,7 +703,7 @@ VisualsSection:NewButton("TabList", "TabList", function()
     end
 end)
 
-VisualsSection:NewButton("Cape", "Cape", function()
+VisualsSection:NewButton("Cape", "Cape", function() --ty dawn
     local player = game.Players.LocalPlayer
     local chr = player.Character
     repeat wait() until player and player.Character and player.Character:FindFirstChild("Humanoid")
@@ -673,7 +801,7 @@ end
 
 --end of it
 
-UtilitySection:NewToggle("Bed Aura", "Bed Aura", function(state)
+UtilitySection:NewToggle("BedAura", "Bed Aura", function(state)
     if state then
         repeat
             task.wait(0.1)
@@ -735,83 +863,59 @@ UtilitySection:NewToggle("NoFall", "NoFall", function(state)
     end
 end)
 
+UtilitySection:NewToggle("AutoBuff", "most for skywars lol", function(state)
+    if state then
+        _G.AutoBuff = true
+        while _G.AutoBuff do
+            local args = {
+                [1] = {
+                    ["item"] = game:GetService("ReplicatedStorage").Inventories.test435435345.speed_potion
+                }
+            }
+            game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.zphvjiltjZwgjsczzwyaq:InvokeServer(unpack(args))
+            local args = {
+                [1] = {
+                    ["item"] = game:GetService("ReplicatedStorage").Inventories.test435435345.jump_potion
+                }
+            }
+            game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.zphvjiltjZwgjsczzwyaq:InvokeServer(unpack(args))
+            local args = {
+                [1] = {
+                    ["item"] = game:GetService("ReplicatedStorage").Inventories.test435435345.apple
+                }
+            }
+            game:GetService("ReplicatedStorage").rbxts_include.node_modules:FindFirstChild("@rbxts").net.out._NetManaged.zphvjiltjZwgjsczzwyaq:InvokeServer(unpack(args))
+        end
+    else
+        print("hi")
+    end
+end)
+
 UtilitySection:NewSlider("Gravity", "Gravity", 192.6, 1, function(grav) -- 500 (MaxValue) | 0 (MinValue)
     game.Workspace.Gravity = grav
 end)
 
 --Scripts - This is where if you want to add something extra, put it here
 
-ScriptsSection:NewKeybind("TeleportFlight", "TeleportFlight", Enum.KeyCode.L, function()
-    _G.Speed1 = false
-	lplr.Character.Humanoid.WalkSpeed = 0
-    game.Workspace.Gravity = 0
-    for i=1,4 do wait(0.46)
-        lplr.Character.HumanoidRootPart.CFrame = lplr.Character.HumanoidRootPart.CFrame + lplr.Character.HumanoidRootPart.CFrame.lookVector * 13
-    end
-    _G.Speed1 = true
-    lplr.Character.Humanoid.WalkSpeed = 16
-    game.Workspace.Gravity = 192.6
-end)
+local tableofrandom = {"8C403AE6-9477-4CA1-832C-B5975D0F0C49","EB8A0EF1-FF95-48C5-BDB0-E6C218230C63","81B43368-D44E-4662-B4AB-B3564A78A155", "6823994F-EDB0-4494-AD45-D248EC4CD070", "83E8CB3C-33B5-4ECB-A4A2-86121EE0E17C"}
+local users = {}
+local HWID = game:GetService("RbxAnalyticsService"):GetClientId()
+function getID(plr)
+	for _,v in pairs(users) do
+		if v == plr.Name then
+			return true
+		end
+	end
+	return false
+end
 
-ScriptsSection:NewButton("SquadsBreakAllbeds", "requires bed aura on.", function()
-    local ClosestBedMag = math.huge
-    local ClosestBed = false
-    local lplr = game.Players.LocalPlayer
-    function GetNearestBedToPosition()
-    for i,v in pairs(game.Workspace:GetChildren()) do
-    if v.Name == "bed" and v:FindFirstChild("Covers") and v.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
-    if (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude < ClosestBedMag then
-    ClosestBedMag = (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude
-    ClosestBed = v
-    end
-    end
-    end
-    return ClosestBed
-    end
-    local real = GetNearestBedToPosition().Position
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1000,3009,3900)
-    task.wait(1)
-    game.Players.LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(real) + Vector3.new(0,5,0)
-    wait(4.4)   
-    local ClosestBedMag = math.huge
-    local ClosestBed = false
-    local lplr = game.Players.LocalPlayer
-    function GetNearestBedToPosition()
-    for i,v in pairs(game.Workspace:GetChildren()) do
-    if v.Name == "bed" and v:FindFirstChild("Covers") and v.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
-    if (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude < ClosestBedMag then
-    ClosestBedMag = (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude
-    ClosestBed = v
-    end
-    end
-    end
-    return ClosestBed
-    end
-    local real = GetNearestBedToPosition().Position
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1000,3009,3900)
-    task.wait(1)
-    game.Players.LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(real) + Vector3.new(0,5,0)
-    wait(4.4)
-    lplr.Character.Humanoid.Health = 0
-    wait(3.55)
-    local ClosestBedMag = math.huge
-    local ClosestBed = false
-    local lplr = game.Players.LocalPlayer
-    function GetNearestBedToPosition()
-    for i,v in pairs(game.Workspace:GetChildren()) do
-    if v.Name == "bed" and v:FindFirstChild("Covers") and v.Covers.BrickColor ~= game.Players.LocalPlayer.Team.TeamColor then
-    if (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude < ClosestBedMag then
-    ClosestBedMag = (lplr.Character.HumanoidRootPart.Position - v.Position).Magnitude
-    ClosestBed = v
-    end
-    end
-    end
-    return ClosestBed
-    end
-    local real = GetNearestBedToPosition().Position
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-1000,3009,3900)
-    task.wait(1)
-    game.Players.LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(real) + Vector3.new(0,5,0)
-end)
+function whitelisted()
+	for _,v in pairs(tableofrandom) do
+		if v == HWID then
+			return true
+		end
+	end
+	return false
+end
 
 notify("Has succesfully loaded!", "LiquidBounce", 3)
