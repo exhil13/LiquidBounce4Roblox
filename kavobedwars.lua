@@ -346,7 +346,7 @@ VisualsSection:NewButton("Chams", "Chams", function()--springs
     end)
 end)
 
-VisualsSection:NewButton("Health", "Health", function()--springs
+VisualsSection:NewButton("Health | LiqBounce", "Health", function()--springs
     local ScreenGui = Instance.new("ScreenGui")
     local TextLabel = Instance.new("TextLabel")
     local UICorner = Instance.new("UICorner")
@@ -366,7 +366,7 @@ VisualsSection:NewButton("Health", "Health", function()--springs
     end
 end)
 
-VisualsSection:NewButton("Logo", "Logo", function()--springs
+VisualsSection:NewButton("Logo | LiqBounce", "Logo", function()--springs
     local Logo = Instance.new("ScreenGui")
     local MainFrame = Instance.new("Frame")
     local MainFrame2 = Instance.new("Frame")
@@ -422,7 +422,7 @@ VisualsSection:NewButton("Logo", "Logo", function()--springs
     end
 end)
 
-VisualsSection:NewButton("TabList", "TabList", function() --springs
+VisualsSection:NewButton("TabList | LiqBounce", "TabList", function() --springs
     local TabList = Instance.new("ScreenGui")
     local Frame = Instance.new("Frame")
     local Combat = Instance.new("TextLabel")
@@ -578,7 +578,7 @@ VisualsSection:NewButton("TabList", "TabList", function() --springs
     end
 end)
 
-VisualsSection:NewButton("Cape", "Cape", function() --ty dawn
+VisualsSection:NewButton("Cape | LiqBounce", "Cape", function() --ty dawn
     local player = game.Players.LocalPlayer
     local chr = player.Character
     repeat wait() until player and player.Character and player.Character:FindFirstChild("Humanoid")
